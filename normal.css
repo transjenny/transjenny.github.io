@@ -10,7 +10,7 @@ body
 
 }
 html{
-    font-size: 2vw;
+    font-size: calc(1vw + 1vh);
 }
 h1
 {
