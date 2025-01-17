@@ -11,8 +11,8 @@ function OnLoad()
     var BufferTitle = document.getElementById("bufferOverTitle");
     BufferTitle.innerHTML = WelcomeText.innerHTML;
     console.log(WelcomeText.style.fontsize);
-    WelcomeText.style.fontsize = "60px";
-    document.getElementById("bufferOverTitle").style.fontSize = "80px"
+    WelcomeText.style.fontsize = "6rem";
+    document.getElementById("bufferOverTitle").style.fontSize = "6rem";
     BufferTitle.style.opacity = "0";
     var WindowWidth = window.innerWidth;
     var WindowHeight = window.innerHeight;
