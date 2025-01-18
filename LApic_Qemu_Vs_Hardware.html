@@ -17,7 +17,7 @@
         <h1>GP Fault</h1>
         <p>After I had started the kernel, I was picking up an <a href="https://wiki.osdev.org/Exceptions#General_Protection_Fault" target="_blank" >GP Fault</a> on my emergency exception handler(It's used if an exception is called and nothing is done). This confused me as at this point the only <a href="https://wiki.osdev.org/Segmentation#Protected_Mode" target="_blank" >segments</a> that were setup was the kernel <a href="https://wiki.osdev.org/Segmentation#Protected_Mode" target="_blank" >segment</a>. </p>
         <p>After the GP Fault started showing up I had built a debugging handler for the GP Fault. I will put this image below.</p>
-        <img src="Images/LApic_qemu_Vs_Hardware(ex5).jpg" width="400rem" height="300rem" class="WhoAmI" >
+        <img src="Images/LApic_Qemu_Vs_Hardware(ex5).jpg" width="400rem" height="300rem" class="WhoAmI" >
         <p>I'd found that the second I write to a <a href="https://wiki.osdev.org/APIC#Local_APIC_registers" target="_blank">LAPIC register</a> through MMIO, BOOM GP Fault.</p>
         <p>By now I was more confused than anything. I just couldn't understand what the difference was. By now I had added support for <a href="https://wiki.osdev.org/RSDP" target="_blank" >XSDP</a> and was seeing nothing different. So, I pulled out the five thousand page <a href="https://cdrdv2.intel.com/v1/dl/getContent/671200" target="_blank" >Intel documentation</a>. After a whole day with nothing being found. Finally I'd found some documentation that had given me an idea. It was so stupid, but I wondered if my computer wasn't emulating the old version of the APIC(I'd add a link to this but I cant find much on x2apic).</p>
         <h1>The Difference</h1>
