@@ -1,0 +1,33 @@
+<!DOCTYPE html> 
+
+<html>
+    <head>
+        <link rel="stylesheet" href="normal.css"></link>
+        <title>QEMU Vs Hardware(LAPIC)</title>
+    </head>
+    
+    <body>
+        <a class="MenuButton" href="index.html">back</a>
+        <h2>Differences With The LAPIC On QEMU VS On Real Hardware</h2> 
+        <h3> At Least Differences That Became A Issue For Me</h3>
+        <h1>Some Background</h1>
+        <p>So, for the last few weeks I've been working on a OS. I had managed to get it to work on QEMU without issue. So, I had wanted to try out my OS on real hardware. My Throught process was "How hard could it be? It already works on QEMU," Oh how wrong I was...</p>
+        <img src="Images/clueless.gif" width="50rem" height="50rem"></img>
+        <p>The first issue I had encountered was my bootloader. Long story short; The bootloader didn't like me booting off of a USB drive. I ended up using <a href="https://wiki.osdev.org/Unreal_Mode" target="_blank" >unreal mode</a> to load a sector then copy it to the kernel space. </p>
+        <h1>GP Fault</h1>
+        <p>After I had started the kernel, I was picking up an <a href="https://wiki.osdev.org/Exceptions#General_Protection_Fault" target="_blank" >GP Fault</a> on my emergency exception handler(It's used if an exception is called and nothing is done). This confused me as at this point the only <a href="https://wiki.osdev.org/Segmentation#Protected_Mode" target="_blank" >segments</a> that were setup was the kernel <a href="https://wiki.osdev.org/Segmentation#Protected_Mode" target="_blank" >segment</a>. </p>
+        <p>After the GP Fault started showing up I had built a debugging handler for the GP Fault. I will put this image below.</p>
+        <img src="Images/LApic_qemu_Vs_Hardware(ex5).jpg" width="400rem" height="300rem" class="WhoAmI" >
+        <p>I'd found that the second I write to a <a href="https://wiki.osdev.org/APIC#Local_APIC_registers" target="_blank">LAPIC register</a> through MMIO, BOOM GP Fault.</p>
+        <p>By now I was more confused than anything. I just couldn't understand what the difference was. By now I had added support for <a href="https://wiki.osdev.org/RSDP" target="_blank" >XSDP</a> and was seeing nothing different. So, I pulled out the five thousand page <a href="https://cdrdv2.intel.com/v1/dl/getContent/671200" target="_blank" >Intel documentation</a>. After a whole day with nothing being found. Finally I'd found some documentation that had given me an idea. It was so stupid, but I wondered if my computer wasn't emulating the old version of the APIC(I'd add a link to this but I cant find much on x2apic).</p>
+        <h1>The Difference</h1>
+        <p>The primary difference was the version of tables and compatibility. It turns out that my laptop's I was using as a test bed just didn't seem to be up to Intel's standard for backwards compatibility. So, I started implementing x2apic. Finally after 3 hours I had managed to add support for x2apic(hardest part was switching to MSRs). And finally after about 2 days at this point. I'd gotten a different error.</p>
+        <p>Suddenly after attempting to enable another core using the LAPIC; It seemed it suddenly disabled x2apic? Sadly I didn't get a photo of the error. Shortly after this had happened I'd realised what had happened.</p>
+        <p>The cores were starting! Although if you know about how cores normally start, you'd know you change the LAPIC register and that MSRs are core independent... You might know what happened but just in case you don't know what happened. To enable x2apic you set bit 10 in the MSR, I check for this bit when reading and writing to LAPIC registers. So, it wasn't being set across the whole computer! This made the cores try to use the unsupported way of using the LAPIC registers.</p>
+        <h1>Takeaways</h1>
+        <p>When making a kernel, assume **NOTHING** is up to standard. As it's more likely than not that it's not. Although this experience was painful to figure out; I think it was for the best. I'd rather find out now when only parts of the kernel are done then have to rebuild the whole kernel's base.</p>
+        <p>That's the blog, Hope you enjoyed the read and maybe it helped someone.</p>
+        <p>(Sorry for the bad site, I'm no UI designer)</p>
+    </body>
+</html>
+
